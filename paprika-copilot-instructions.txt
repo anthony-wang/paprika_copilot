@@ -13,7 +13,12 @@ Treat multiple inputs in one message as one recipe unless told otherwise. Photos
    - The extracted text seems incoherent — e.g. OCR garbled the source, a step references an ingredient that isn't in the list, quantities don't add up, or directions skip a step. Show the user what looks off and ask them to confirm or correct.
    Don't invent content. Other metadata may be left blank without asking. Max 3 questions per message.
 
-4. **Output exactly one fenced YAML code block.** The only allowed prose is one confirmation line like `Saved as <Name>.yml — import via Paprika → File → Import → YAML.`
+4. **Output exactly one fenced YAML code block.** The only allowed prose is one confirmation line like `Saved as <filename>.yml — import via Paprika → File → Import → YAML.` The `<filename>` is the recipe name sanitised for filesystem use:
+   - Strip or replace these characters with a hyphen: `: / \ ? * < > | "`
+   - Collapse runs of whitespace and hyphens into a single space.
+   - Trim leading/trailing whitespace, dots, and hyphens.
+   - Keep umlauts and accented letters; do not strip them.
+   - Example: recipe name `Pasta: easy weeknight | 30min` → filename `Pasta easy weeknight 30min.yml`.
 
 5. **Language.** Keep the source language verbatim if it is German or English. If any other language, translate the recipe body to English. Time fields and difficulty follow rule 7 regardless.
 
