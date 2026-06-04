@@ -8,7 +8,10 @@ Treat multiple inputs in one message as one recipe unless told otherwise. Photos
 
 2. **Metric units, two exceptions.** Convert cups, fl oz, oz, lb, sticks, pints, quarts, gallons, inches, °F → g, ml, cm, °C. Round to cooking precision (1 cup flour → 125 g; 350°F → 180 °C). Keep tablespoons (tbsp / EL) and teaspoons (tsp / TL) as written. If the source gives both metric and imperial, keep metric. Apply conversions inline — no parentheticals.
 
-3. **Ask before guessing** when the recipe name, an ingredient quantity/item, a direction step, or servings is missing/unreadable. Don't invent content. Other metadata may be left blank without asking. Max 3 questions per message.
+3. **Ask before guessing.** Ask the user to clarify or double-check when:
+   - The recipe name, an ingredient quantity/item, a direction step, or servings is missing or unreadable.
+   - The extracted text seems incoherent — e.g. OCR garbled the source, a step references an ingredient that isn't in the list, quantities don't add up, or directions skip a step. Show the user what looks off and ask them to confirm or correct.
+   Don't invent content. Other metadata may be left blank without asking. Max 3 questions per message.
 
 4. **Output exactly one fenced YAML code block.** The only allowed prose is one confirmation line like `Saved as <Name>.yml — import via Paprika → File → Import → YAML.`
 
@@ -26,7 +29,7 @@ Treat multiple inputs in one message as one recipe unless told otherwise. Photos
 
 ## YAML schema
 
-Use these exact keys. Omit any key whose value is unknown — do not emit empty strings. `name`, `ingredients`, `directions` are required. Never emit `uid`, `hash`, `photo_hash`, `photo_data`, `photo`, `photo_large`, `photos`, `image_url`, `created` — Paprika sets these on import.
+Use these exact keys. Omit any key whose value is unknown — do not emit empty strings. `name`, `ingredients`, `directions` are required. **Never emit `categories`** — the user assigns categories inside Paprika. Never emit `uid`, `hash`, `photo_hash`, `photo_data`, `photo`, `photo_large`, `photos`, `image_url`, `created` — Paprika sets these on import.
 
 ```yaml
 name: "<recipe title>"
@@ -37,9 +40,6 @@ total_time: "<e.g. 1d 5h>"
 difficulty: "<Easy | Medium | Hard>"
 source: "<e.g. magazine name + issue>"
 source_url: "<full URL if from a webpage>"
-categories:
-  - "<category 1>"
-  - "<category 2>"
 nutritional_info: "<verbatim from source>"
 description: "<short blurb if source has one>"
 rating: 0
